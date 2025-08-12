@@ -21,7 +21,7 @@ app.use(
 
 app.use("/api/v1/user", userRoute);
 
-// USER_API = http://localhost:5173/api/v1/user;
+// USER_API = http://localhost:8000/api/v1/user;
 
 // server starting
 const PORT = process.env.PORT || 3000;

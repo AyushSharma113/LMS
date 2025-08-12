@@ -1,5 +1,6 @@
 import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+import genrateToken from "../utils/genrateToken.js";
 
 export const register = async (req, res) => {
   try {
@@ -70,7 +71,7 @@ export const login = async (req, res) => {
         message: "incorrect email and password",
       });
     }
-    generateToken(res, user, `Welcome back ${user.name}`);
+    genrateToken(res, user, `Welcome back ${user.name}`);
   } catch (error) {
     console.log(error);
     res.status(500).json({
