@@ -23,6 +23,7 @@ import {
 } from "./ui/sheet";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import DarkMode from "../DarkMode";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const user = true;
@@ -37,11 +38,11 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto hidden md:flex justify-between items-center gap-10 h-full">
         <div className="flex items-center gap-2">
           <School size={"30"} />
-          <a to="/">
+          <Link to="/">
             <h1 className="hidden md:block font-extrabold text-2xl">
               E-Learning
             </h1>
-          </a>
+          </Link>
         </div>
         {/* User icons and dark mode icon  */}
         <div className="flex items-center gap-8">
@@ -61,11 +62,11 @@ const Navbar = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
-                    <a to="my-learning">My learning</a>
+                    <Link to="my-learning">My learning</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     {" "}
-                    <a to="profile">Edit Profile</a>{" "}
+                    <Link to="profile">Edit Profile</Link>{" "}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={logoutHandler}>
                     Log out
@@ -75,7 +76,7 @@ const Navbar = () => {
                   <>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>
-                      <a to="/admin/dashboard">Dashboard</a>
+                      <Link to="/admin/dashboard">Dashboard</Link>
                     </DropdownMenuItem>
                   </>
                 )}
@@ -117,14 +118,14 @@ const MobileNavbar = ({ user }) => {
         <SheetHeader className="flex flex-row items-center justify-between mt-2">
           <SheetTitle>
             {" "}
-            <a to="/">E-Learning</a>
+            <Link to="/">E-Learning</Link>
           </SheetTitle>
           <DarkMode />
         </SheetHeader>
         <Separator className="mr-2" />
         <nav className="flex flex-col space-y-4">
-          <a to="/my-learning">My Learning</a>
-          <a to="/profile">Edit Profile</a>
+          <Link to="/my-learning">My Learning</Link>
+          <Link to="/profile">Edit Profile</Link>
           <p>Log out</p>
         </nav>
         {user?.role === "instructor" && (
