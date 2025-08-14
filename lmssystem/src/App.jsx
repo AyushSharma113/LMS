@@ -9,6 +9,7 @@ import MainLayout from "./layout/MainLayout";
 import Courses from "./pages/student/Courses";
 import MyLearning from "./pages/student/MyLearning";
 import Profile from "./pages/student/Profile";
+import Login from "./pages/Login";
 
 const appRouter = createBrowserRouter([
   {
@@ -21,6 +22,7 @@ const appRouter = createBrowserRouter([
           <>
             <HeroSection />
             <Courses />
+            <Login />
           </>
         ),
       },

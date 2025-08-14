@@ -103,7 +103,7 @@ export const logout = async (_, res) => {
 export const getUserProfile = async (req, res) => {
   try {
     const userId = req.id;
-    const user = User.findById(userId)
+    const user = await User.findById(userId)
       .select("-password")
       .populate("enrolledCourses");
 

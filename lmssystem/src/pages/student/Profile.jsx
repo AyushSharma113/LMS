@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Course from "./Course";
+import { useLoadUserQuery } from "../../features/api/authApi";
 
 const Profile = () => {
   const [name, setName] = useState("");
@@ -21,70 +22,13 @@ const Profile = () => {
 
   const updateUserIsLoading = false;
 
-  const user = {
-    name: "Rohit Sharma",
-    email: "rohit.sharma@example.com",
-    role: "student",
-    photoUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgmNDDrkYKiQyONYsHR_3HM510JJNSrEkgEg&s",
-    enrolledCourses: [
-      {
-        courseTitle: "Full Stack Web Development",
-        _id: "64f6b12e9a1c2f001234abcd",
-        courseThumbnail: "https://example.com/images/webdev-course.jpg",
-        creator: {
-          photoUrl: "https://example.com/images/instructor1.jpg",
-          name: "Rohit Sharma",
-        },
-        courseLevel: "Beginner",
-        coursePrice: 2999,
-      },
-      {
-        courseTitle: "Advanced React and Redux",
-        _id: "64f6b12e9a1c2f001234abce",
-        courseThumbnail: "https://example.com/images/react-course.jpg",
-        creator: {
-          photoUrl: "https://example.com/images/instructor2.jpg",
-          name: "Ankit Verma",
-        },
-        courseLevel: "Advanced",
-        coursePrice: 4999,
-      },
-      {
-        courseTitle: "Python for Data Science",
-        _id: "64f6b12e9a1c2f001234abcf",
-        courseThumbnail: "https://example.com/images/python-course.jpg",
-        creator: {
-          photoUrl: "https://example.com/images/instructor3.jpg",
-          name: "Priya Singh",
-        },
-        courseLevel: "Intermediate",
-        coursePrice: 3999,
-      },
-      {
-        courseTitle: "Python for Data Science",
-        _id: "64f6b12e9a1c2f001234abcf",
-        courseThumbnail: "https://example.com/images/python-course.jpg",
-        creator: {
-          photoUrl: "https://example.com/images/instructor3.jpg",
-          name: "Priya Singh",
-        },
-        courseLevel: "Intermediate",
-        coursePrice: 3999,
-      },
-      {
-        courseTitle: "Python for Data Science",
-        _id: "64f6b12e9a1c2f001234abcf",
-        courseThumbnail: "https://example.com/images/python-course.jpg",
-        creator: {
-          photoUrl: "https://example.com/images/instructor3.jpg",
-          name: "Priya Singh",
-        },
-        courseLevel: "Intermediate",
-        coursePrice: 3999,
-      },
-    ],
-  };
+  const { data, isLoading, refetch } = useLoadUserQuery();
+
+  console.log(data);
+
+  if (isLoading) return <h1>Profile Loading...</h1>;
+
+  const user = data && data.user;
 
   return (
     <div className="max-w-4xl mx-auto px-4 my-10">
