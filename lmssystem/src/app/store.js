@@ -9,4 +9,11 @@ export const store = configureStore({
     getDefaultMiddleware().concat(authApi.middleware), // <-- add middleware
 });
 
+const initializeApp = async () => {
+  await store.dispatch(
+    authApi.endpoints.loadUser.initiate({}, { forceRefetch: true })
+  );
+};
+
+initializeApp();
 export default store;

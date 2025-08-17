@@ -22,9 +22,12 @@ const appRouter = createBrowserRouter([
           <>
             <HeroSection />
             <Courses />
-            <Login />
           </>
         ),
+      },
+      {
+        path: "/login",
+        element: <Login />,
       },
       {
         path: "my-learning",

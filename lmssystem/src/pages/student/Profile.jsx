@@ -14,22 +14,59 @@ import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Course from "./Course";
-import { useLoadUserQuery } from "../../features/api/authApi";
+import {
+  useLoadUserQuery,
+  useUpdateUserMutation,
+} from "../../features/api/authApi";
+import { toast } from "sonner";
 
 const Profile = () => {
   const [name, setName] = useState("");
   const [profilePhoto, setProfilePhoto] = useState("");
 
-  const updateUserIsLoading = false;
-
   const { data, isLoading, refetch } = useLoadUserQuery();
+  const [
+    updateUser,
+    {
+      data: updateUserData,
+      isLoading: updateUserIsLoading,
+      isError,
+      error,
+      isSuccess,
+    },
+  ] = useUpdateUserMutation();
 
-  console.log(data);
-
-  if (isLoading) return <h1>Profile Loading...</h1>;
+  // console.log(data);
 
   const user = data && data.user;
 
+  const onChangeHandler = (e) => {
+    const file = e.target.files?.[0];
+    if (file) setProfilePhoto(file);
+  };
+
+  const updateUserHandler = async () => {
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("profilePhoto", profilePhoto);
+    await updateUser(formData);
+  };
+
+  useEffect(() => {
+    refetch();
+  }, []);
+
+  useEffect(() => {
+    if (isSuccess) {
+      refetch();
+      toast.success(updateUserData.message || "Profile updated.");
+    }
+    if (isError) {
+      toast.error(error.message || "Failed to update profile");
+    }
+  }, [error, updateUserData, isSuccess, isError]);
+
+  if (isLoading) return <h1>Profile Loading...</h1>;
   return (
     <div className="max-w-4xl mx-auto px-4 my-10">
       <h1 className="font-bold text-2xl text-center md:text-left">PROFILE</h1>
@@ -96,7 +133,7 @@ const Profile = () => {
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label>Profile Photo</Label>
                   <Input
-                    // onChange={onChangeHandler}
+                    onChange={onChangeHandler}
                     type="file"
                     accept="image/*"
                     className="col-span-3"
@@ -105,8 +142,8 @@ const Profile = () => {
               </div>
               <DialogFooter>
                 <Button
-                //   disabled={updateUserIsLoading}
-                //   onClick={updateUserHandler}
+                  disabled={updateUserIsLoading}
+                  onClick={updateUserHandler}
                 >
                   {updateUserIsLoading ? (
                     <>

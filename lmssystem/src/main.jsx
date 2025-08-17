@@ -6,13 +6,22 @@ import { Provider } from "react-redux";
 import store from "./app/store";
 import { Toaster } from "./components/ui/sonner";
 import { ThemeProvider } from "./components/ThemeProvider";
+import { useLoadUserQuery } from "./features/api/authApi";
+import LoadingSpinner from "./components/LoadingSpinner";
+
+const CustomLoader = ({ children }) => {
+  const { isLoading } = useLoadUserQuery();
+  return <>{isLoading ? <LoadingSpinner /> : <>{children}</>}</>;
+};
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <App />
-        <Toaster />
+        <CustomLoader>
+          <App />
+          <Toaster />
+        </CustomLoader>
       </ThemeProvider>
     </Provider>
   </StrictMode>
