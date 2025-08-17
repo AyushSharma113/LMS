@@ -4,6 +4,7 @@ import userRoute from "./routes/user.route.js";
 import connectDB from "./database/db.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import courseRoute from "./routes/course.route.js";
 dotenv.config({});
 
 connectDB();
@@ -20,6 +21,7 @@ app.use(
 );
 
 app.use("/api/v1/user", userRoute);
+app.use("/api/v1/course", courseRoute);
 
 // USER_API = http://localhost:8000/api/v1/user;
 

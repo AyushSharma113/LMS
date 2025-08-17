@@ -91,8 +91,10 @@ const Navbar = () => {
                 {user?.role === "instructor" && (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <Link to="/admin/dashboard">Dashboard</Link>
+                    <DropdownMenuItem className="flex object-center">
+                      <Link to="/admin/dashboard">
+                        <Button className="">Dashboard</Button>
+                      </Link>
                     </DropdownMenuItem>
                   </>
                 )}
@@ -100,8 +102,13 @@ const Navbar = () => {
             </DropdownMenu>
           ) : (
             <div className="flex items-center gap-2">
-              <Button variant="outline">Login</Button>
-              <Button>Signup</Button>
+              <Link to="/login">
+                <Button variant="outline">Login</Button>
+              </Link>
+
+              <Link to="/login">
+                <Button>Sign up</Button>
+              </Link>
             </div>
           )}
           <DarkMode />
