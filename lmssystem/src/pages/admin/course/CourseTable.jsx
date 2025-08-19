@@ -14,6 +14,7 @@ import {
 import { Edit } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useGetCreatorCourseQuery } from "../../../features/api/courseApi.js";
 
 const invoices = [
   {
@@ -60,7 +61,7 @@ const invoices = [
   },
 ];
 
-const data = {
+const courseData = {
   courses: [
     {
       _id: "1",
@@ -99,6 +100,12 @@ const CourseTable = () => {
   //   const { data, isLoading } = useGetCreatorCourseQuery();
   const navigate = useNavigate();
 
+  const { data, isLoading } = useGetCreatorCourseQuery();
+
+  console.log(data);
+
+  console.log(data);
+
   //   if (isLoading) return <h1>Loading...</h1>;
 
   return (
@@ -115,7 +122,7 @@ const CourseTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.courses.map((course) => (
+          {data?.courses.map((course) => (
             <TableRow key={course._id}>
               <TableCell className="font-medium">
                 {course?.coursePrice || "NA"}
