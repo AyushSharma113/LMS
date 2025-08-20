@@ -1,4 +1,3 @@
-import RichTextEditor from "@/components/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,18 +18,64 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Textarea } from "../../../components/ui/textarea";
+import { useEditCourseMutation } from "../../../features/api/courseApi";
 
 const CourseTab = () => {
   const [input, setInput] = useState({
-    title: "i dont know",
-    description: "lorem ipsum lawra lahsun i dont iknow",
+    courseTitle: "",
+    subTitle: "",
+    description: "",
+    category: "",
+    courseLevel: "",
+    coursePrice: "",
+    courseThumbnail: "",
   });
-
-  const isLoading = false;
+  const [previewThumbnail, setPreviewThumbnail] = useState("");
   const navigate = useNavigate();
-  const updateCourseHandler = () => {
-    console.log("submitted");
+  const isPublished = false;
+
+  const params = useParams();
+  const courseId = params.courseId;
+
+  const [editCourse, { data, isLoading, isSuccess, error }] =
+    useEditCourseMutation();
+
+  const changeEventHandler = (e) => {
+    const { name, value } = e.target;
+    setInput({ ...input, [name]: value });
+  };
+
+  const selectCategory = (value) => {
+    setInput({ ...input, category: value });
+  };
+
+  const selectCourseLevel = (value) => {
+    setInput({ ...input, courseLevel: value });
+  };
+
+  const selectThumbnail = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setInput({ ...input, courseThumbnail: file });
+      const fileReader = new FileReader();
+      fileReader.onloadend = () => setPreviewThumbnail(fileReader.result);
+      fileReader.readAsDataURL(file);
+    }
+  };
+
+  const updateCourseHandler = async () => {
+    const formData = new FormData();
+    formData.append("courseTitle", input.courseTitle);
+    formData.append("subTitle", input.subTitle);
+    formData.append("description", input.description);
+    formData.append("category", input.category);
+    formData.append("courseLevel", input.courseLevel);
+    formData.append("coursePrice", input.coursePrice);
+    formData.append("courseThumbnail", input.courseThumbnail);
+
+    await editCourse({ formData, courseId });
   };
 
   return (
@@ -65,8 +110,8 @@ const CourseTab = () => {
             <Input
               type="text"
               name="courseTitle"
-              //   value={input.courseTitle}
-              //   onChange={changeEventHandler}
+              value={input.courseTitle}
+              onChange={changeEventHandler}
               placeholder="Ex. Fullstack developer"
             />
           </div>
@@ -75,22 +120,25 @@ const CourseTab = () => {
             <Input
               type="text"
               name="subTitle"
-              //   value={input.subTitle}
-              //   onChange={changeEventHandler}
+              value={input.subTitle}
+              onChange={changeEventHandler}
               placeholder="Ex. Become a Fullstack developer from zero to hero in 2 months"
             />
           </div>
           <div>
             <Label>Description</Label>
-            {/* <RichTextEditor input={input} setInput={setInput} /> */}
-            <RichTextEditor input={input} setInput={setInput} />
+            <Textarea
+              className="mt-1.5"
+              value={input.description}
+              onChange={changeEventHandler}
+            />
           </div>
           <div className="flex items-center gap-5">
             <div>
               <Label>Category</Label>
               <Select
-              // defaultValue={input.category}
-              // onValueChange={selectCategory}
+                defaultValue={input.category}
+                onValueChange={selectCategory}
               >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select a category" />
@@ -121,8 +169,8 @@ const CourseTab = () => {
             <div>
               <Label>Course Level</Label>
               <Select
-              // defaultValue={input.courseLevel}
-              // onValueChange={selectCourseLevel}
+                defaultValue={input.courseLevel}
+                onValueChange={selectCourseLevel}
               >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select a course level" />
@@ -142,8 +190,8 @@ const CourseTab = () => {
               <Input
                 type="number"
                 name="coursePrice"
-                // value={input.coursePrice}
-                // onChange={changeEventHandler}
+                value={input.coursePrice}
+                onChange={changeEventHandler}
                 placeholder="199"
                 className="w-fit"
               />
@@ -153,17 +201,17 @@ const CourseTab = () => {
             <Label>Course Thumbnail</Label>
             <Input
               type="file"
-              //   onChange={selectThumbnail}
+              onChange={selectThumbnail}
               accept="image/*"
               className="w-fit"
             />
-            {/* {previewThumbnail && (
+            {previewThumbnail && (
               <img
                 src={previewThumbnail}
                 className="e-64 my-2"
                 alt="Course Thumbnail"
               />
-            )} */}
+            )}
           </div>
           <div>
             <Button onClick={() => navigate("/admin/course")} variant="outline">
