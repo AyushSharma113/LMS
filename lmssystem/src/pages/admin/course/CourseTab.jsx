@@ -20,7 +20,11 @@ import {
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Textarea } from "../../../components/ui/textarea";
-import { useEditCourseMutation } from "../../../features/api/courseApi";
+import {
+  useEditCourseMutation,
+  useGetCourseByIdQuery,
+} from "../../../features/api/courseApi";
+import { Loader2 } from "lucide-react";
 
 const CourseTab = () => {
   const [input, setInput] = useState({
@@ -41,6 +45,11 @@ const CourseTab = () => {
 
   const [editCourse, { data, isLoading, isSuccess, error }] =
     useEditCourseMutation();
+  const {
+    data: courseByIdData,
+    isLoading: courseByIdLoading,
+    refetch,
+  } = useGetCourseByIdQuery(courseId);
 
   const changeEventHandler = (e) => {
     const { name, value } = e.target;
@@ -75,6 +84,7 @@ const CourseTab = () => {
     formData.append("coursePrice", input.coursePrice);
     formData.append("courseThumbnail", input.courseThumbnail);
 
+    // console.log(input);
     await editCourse({ formData, courseId });
   };
 
@@ -129,7 +139,8 @@ const CourseTab = () => {
             <Label>Description</Label>
             <Textarea
               className="mt-1.5"
-              value={input.description}
+              name="description"
+              defaultValue={input.description}
               onChange={changeEventHandler}
             />
           </div>
