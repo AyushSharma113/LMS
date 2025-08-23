@@ -104,7 +104,7 @@ export const editCourse = async (req, res) => {
 
 export const getCourseById = async (req, res) => {
   try {
-    const courseId = req.params;
+    const { courseId } = req.params;
 
     if (!courseId) {
       res.status(400).json({

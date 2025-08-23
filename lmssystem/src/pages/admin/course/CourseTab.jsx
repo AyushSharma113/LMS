@@ -41,7 +41,7 @@ const CourseTab = () => {
   const isPublished = false;
 
   const params = useParams();
-  const courseId = params.courseId;
+  const courseId = params.courseid;
 
   const [editCourse, { data, isLoading, isSuccess, error }] =
     useEditCourseMutation();
@@ -50,6 +50,8 @@ const CourseTab = () => {
     isLoading: courseByIdLoading,
     refetch,
   } = useGetCourseByIdQuery(courseId);
+
+  console.log(courseByIdData);
 
   const changeEventHandler = (e) => {
     const { name, value } = e.target;
@@ -99,7 +101,7 @@ const CourseTab = () => {
         </div>
         <div className="space-x-2">
           <Button
-            // disabled={courseByIdData?.course.lectures.length === 0}
+            disabled={courseByIdData?.course.lectures.length === 0}
             variant="outline"
             // onClick={() =>
             //   publishStatusHandler(
