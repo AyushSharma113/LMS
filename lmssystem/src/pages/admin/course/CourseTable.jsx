@@ -16,85 +16,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetCreatorCourseQuery } from "../../../features/api/courseApi.js";
 
-const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-];
 
-const courseData = {
-  courses: [
-    {
-      _id: "1",
-      coursePrice: "499",
-      isPublished: true,
-      courseTitle: "React for Beginners",
-    },
-    {
-      _id: "2",
-      coursePrice: "999",
-      isPublished: false,
-      courseTitle: "Node.js Masterclass",
-    },
-    {
-      _id: "3",
-      coursePrice: "799",
-      isPublished: true,
-      courseTitle: "MongoDB Essentials",
-    },
-    {
-      _id: "4",
-      coursePrice: "1199",
-      isPublished: false,
-      courseTitle: "Full-Stack MERN Bootcamp",
-    },
-    {
-      _id: "5",
-      coursePrice: "",
-      isPublished: true,
-      courseTitle: "Tailwind CSS Crash Course",
-    },
-  ],
-};
+
 
 const CourseTable = () => {
 

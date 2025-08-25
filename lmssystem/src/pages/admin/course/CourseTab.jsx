@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Textarea } from "../../../components/ui/textarea";
 import {
@@ -25,6 +25,7 @@ import {
   useGetCourseByIdQuery,
 } from "../../../features/api/courseApi";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const CourseTab = () => {
   const [input, setInput] = useState({
@@ -50,6 +51,21 @@ const CourseTab = () => {
     isLoading: courseByIdLoading,
     refetch,
   } = useGetCourseByIdQuery(courseId);
+
+  useEffect(() => {
+    if (courseByIdData?.course) {
+      const course = courseByIdData?.course;
+      setInput({
+        courseTitle: course.courseTitle,
+        subTitle: course.subTitle,
+        description: course.description,
+        category: course.category,
+        courseLevel: course.courseLevel,
+        coursePrice: course.coursePrice,
+        courseThumbnail: "",
+      });
+    }
+  }, [courseByIdData]);
 
   console.log(courseByIdData);
 
@@ -89,6 +105,17 @@ const CourseTab = () => {
     // console.log(input);
     await editCourse({ formData, courseId });
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data.message || "course update");
+    }
+    if (error) {
+      toast.error(error.data.message || "Failed to update course");
+    }
+  }, [isSuccess, error]);
+
+  if (courseByIdLoading) return <h1>Loading...</h1>;
 
   return (
     <Card>
