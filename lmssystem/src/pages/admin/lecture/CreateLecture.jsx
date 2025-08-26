@@ -5,17 +5,27 @@ import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useCreateLectureMutation } from "../../../features/api/courseApi";
+import {
+  useCreateLectureMutation,
+  useGetCourseLectureQuery,
+} from "../../../features/api/courseApi";
 import { toast } from "sonner";
+import Lecture from "./Lecture";
 
 const CreateLecture = () => {
   const [lectureTitle, setLectureTitle] = useState();
 
-  const lectureLoading = false;
   const navigate = useNavigate();
 
   const params = useParams();
   const courseId = params.courseid;
+
+  const {
+    data: lectureData,
+    isLoading: lectureLoading,
+    isError: lectureError,
+    refetch,
+  } = useGetCourseLectureQuery(courseId);
 
   const [createLecture, { data, isLoading, isSuccess, error }] =
     useCreateLectureMutation();
@@ -26,6 +36,7 @@ const CreateLecture = () => {
 
   useEffect(() => {
     if (isSuccess) {
+      refetch();
       toast.success(data.message);
     }
     if (error) {
@@ -73,7 +84,7 @@ const CreateLecture = () => {
           </Button>
         </div>
         <div className="mt-10">
-          {/* {lectureLoading ? (
+          {lectureLoading ? (
             <p>Loading lectures...</p>
           ) : lectureError ? (
             <p>Failed to load lectures.</p>
@@ -88,7 +99,7 @@ const CreateLecture = () => {
                 index={index}
               />
             ))
-          )} */}
+          )}
         </div>
       </div>
     </div>
