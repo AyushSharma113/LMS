@@ -10,25 +10,47 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
+import { useEditLectureMutation, useGetLectureByIdQuery, useRemoveLectureMutation } from "@/features/api/courseApi";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Navigate, redirect, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 const MEDIA_API = "http://localhost:8000/api/v1/media";
 
 const LectureTab = () => {
-  const removeLoading = false;
+
   const [lectureTitle, setLectureTitle] = useState("");
   const [uploadVideInfo, setUploadVideoInfo] = useState(null);
   const [isFree, setIsFree] = useState(false);
   const [mediaProgress, setMediaProgress] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [btnDisable, setBtnDisable] = useState(true);
+  const Navigate = useNavigate()
   const params = useParams();
-  // const { courseId, lectureId } = params;
-  const isLoading = false;
+  const { courseid, lectureid } = params;
+
+  console.log(`courseId: ${courseid}, lectureId: ${lectureid}`)
+
+  const {data: lectureData} = useGetLectureByIdQuery(lectureid);
+
+  console.log(lectureData)
+  
+  const lecture = lectureData?.lecture;
+
+  useEffect(() => {
+    if(lecture){
+      setLectureTitle(lecture.lectureTitle)
+      setIsFree(lecture.isPreviewFree)
+      setUploadVideoInfo(lecture.videoInfo)
+    }
+  }, [lecture])
+  
+
+  const [editLecture, {data, isLoading, isSuccess, error}] = useEditLectureMutation()
+  const [removeLecture, {data:removeData, isLoading: removeLoading, isSuccess: removeSuccess,}] = useRemoveLectureMutation();
+  
 
   const fileChangeHandler = async (e) => {
     const file = e.target.files[0];
@@ -62,10 +84,44 @@ const LectureTab = () => {
   };
 
 
-  const editLectureHandler = () => {
-    console.log("what the fuck is this");
+  
+  
+  const editLectureHandler = async () => {
+    
+    console.log(lectureid, lectureid, uploadVideInfo, isFree, lectureTitle)
+    
+    await editLecture({
+      lectureTitle,
+      videoInfo:uploadVideInfo,
+      isPreviewFree:isFree,
+      courseid,
+      lectureid,
+    });
   };
 
+
+  const removeLectureHandler = async () => {
+      await removeLecture(lectureid)
+      redirect(`/admin/course/${lectureid}/lecture`)
+  }
+  
+
+  useEffect(() => {
+   if(isSuccess){
+    toast.success(data.message)
+   }
+      if (error) {
+      toast.error(error.data.message);
+    }
+  }, [isSuccess, error])
+
+   useEffect(()=>{
+    if(removeSuccess){
+      toast.success(removeData.message);
+    }
+  },[removeSuccess])
+  
+  
   return (
     <Card>
       <CardHeader className="flex justify-between">
@@ -79,7 +135,7 @@ const LectureTab = () => {
           <Button
             disbaled={removeLoading}
             variant="destructive"
-            // onClick={removeLectureHandler}
+            onClick={removeLectureHandler}
           >
             {removeLoading ? (
               <>

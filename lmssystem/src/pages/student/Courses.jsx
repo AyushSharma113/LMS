@@ -1,70 +1,14 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import React from "react";
 import Course from "./Course";
+import { useGetPublishedCourseQuery } from "@/features/api/courseApi";
 
 const Courses = () => {
-  const isLoading = false;
-  //   if (isError) return <h1>Some error occurred while fetching courses.</h1>;
+  const {data, isLoading, isError} = useGetPublishedCourseQuery();
 
-  const data = {
-    courses: [
-      {
-        courseTitle: "Full Stack Web Development",
-        _id: "64f6b12e9a1c2f001234abcd",
-        courseThumbnail: "https://example.com/images/webdev-course.jpg",
-        creator: {
-          photoUrl: "https://example.com/images/instructor1.jpg",
-          name: "Rohit Sharma",
-        },
-        courseLevel: "Beginner",
-        coursePrice: 2999,
-      },
-      {
-        courseTitle: "Advanced React and Redux",
-        _id: "64f6b12e9a1c2f001234abce",
-        courseThumbnail: "https://example.com/images/react-course.jpg",
-        creator: {
-          photoUrl: "https://example.com/images/instructor2.jpg",
-          name: "Ankit Verma",
-        },
-        courseLevel: "Advanced",
-        coursePrice: 4999,
-      },
-      {
-        courseTitle: "Python for Data Science",
-        _id: "64f6b12e9a1c2f001234abcf",
-        courseThumbnail: "https://example.com/images/python-course.jpg",
-        creator: {
-          photoUrl: "https://example.com/images/instructor3.jpg",
-          name: "Priya Singh",
-        },
-        courseLevel: "Intermediate",
-        coursePrice: 3999,
-      },
-      {
-        courseTitle: "Python for Data Science",
-        _id: "64f6b12e9a1c2f001234abcf",
-        courseThumbnail: "https://example.com/images/python-course.jpg",
-        creator: {
-          photoUrl: "https://example.com/images/instructor3.jpg",
-          name: "Priya Singh",
-        },
-        courseLevel: "Intermediate",
-        coursePrice: 3999,
-      },
-      {
-        courseTitle: "Python for Data Science",
-        _id: "64f6b12e9a1c2f001234abcf",
-        courseThumbnail: "https://example.com/images/python-course.jpg",
-        creator: {
-          photoUrl: "https://example.com/images/instructor3.jpg",
-          name: "Priya Singh",
-        },
-        courseLevel: "Intermediate",
-        coursePrice: 3999,
-      },
-    ],
-  };
+  console.log(data)
+  
+    if (isError) return <h1>Some error occurred while fetching courses.</h1>;
 
   return (
     <div className="bg-gray-50 dark:bg-[#141414]">

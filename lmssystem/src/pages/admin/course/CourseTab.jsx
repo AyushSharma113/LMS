@@ -23,6 +23,7 @@ import { Textarea } from "../../../components/ui/textarea";
 import {
   useEditCourseMutation,
   useGetCourseByIdQuery,
+  usePublishCourseMutation,
 } from "../../../features/api/courseApi";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -39,7 +40,7 @@ const CourseTab = () => {
   });
   const [previewThumbnail, setPreviewThumbnail] = useState("");
   const navigate = useNavigate();
-  const isPublished = false;
+ 
 
   const params = useParams();
   const courseId = params.courseid;
@@ -52,6 +53,8 @@ const CourseTab = () => {
     refetch,
   } = useGetCourseByIdQuery(courseId);
 
+      const [publishCourse, {}] = usePublishCourseMutation();
+  
   useEffect(() => {
     if (courseByIdData?.course) {
       const course = courseByIdData?.course;
@@ -106,6 +109,19 @@ const CourseTab = () => {
     await editCourse({ formData, courseId });
   };
 
+    const publishStatusHandler = async (action) => {
+    try {
+      const response = await publishCourse({courseId, query:action});
+      if(response.data){
+        refetch();
+        toast.success(response.data.message);
+      }
+    } catch (error) {
+      toast.error("Failed to publish or unpublish course");
+    }
+  }
+
+  
   useEffect(() => {
     if (isSuccess) {
       toast.success(data.message || "course update");
@@ -130,14 +146,14 @@ const CourseTab = () => {
           <Button
             disabled={courseByIdData?.course.lectures.length === 0}
             variant="outline"
-            // onClick={() =>
-            //   publishStatusHandler(
-            //     courseByIdData?.course.isPublished ? "false" : "true"
-            //   )
-            // }
+            onClick={() =>
+              publishStatusHandler(
+                courseByIdData?.course.isPublished ? "false" : "true"
+              )
+            }
           >
-            {/* {courseByIdData?.course.isPublished ? "Unpublished" : "Publish"} */}
-            publish
+            {courseByIdData?.course.isPublished ? "Unpublished" : "Publish"}
+            
           </Button>
           <Button>Remove Course</Button>
         </div>

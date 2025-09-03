@@ -29,6 +29,25 @@ export const createCourse = async (req, res) => {
   }
 };
 
+export const getPublishedCourse = async (req, res) => {
+  try {
+      const courses = await Course.find({isPublished:true}).populate({path:"creator", select:"name photoUrl"});
+
+        if(!courses){
+            return res.status(404).json({
+                message:"Course not found"
+            })
+        }
+        return res.status(200).json({
+            courses,
+        })
+      
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
 export const getCreatorCourses = async (req, res) => {
   try {
     const userId = req.id;
@@ -172,3 +191,138 @@ export const getCourseLecture = async (req, res) => {
     console.log(error);
   }
 };
+
+export const editLecture = async (req, res) => {
+  try {
+    const { lectureTitle, videoInfo, isPreviewFree } = req.body;
+
+    const { courseId, lectureId } = req.params;
+    const lecture = await Lecture.findById(lectureId);
+
+    if (!lecture) {
+      res.status(404).json({
+        message: "lecture not found!",
+      });
+    }
+
+    // update lecture
+    if (lectureTitle) lecture.lectureTitle = lectureTitle;
+    if (videoInfo?.videoUrl) lecture.videoUrl = videoInfo.videoUrl;
+    if (videoInfo?.publicId) lecture.publicId = videoInfo.publicId;
+    lecture.isPreviewFree = isPreviewFree;
+
+    await lecture.save();
+
+    const course = await Course.findById(courseId);
+    if (course && !course.lectures.includes(lecture._id)) {
+      course.lectures.push(lecture._id);
+      await course.save();
+    }
+    return res.status(200).json({
+      lecture,
+      message: "Lecture updated successfully.",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Failed to edit lectures",
+    });
+  }
+};
+
+
+
+export const removeLecture = async (req, res) => {
+    try {
+      const { lectureId } = req.params;
+      const lecture = await Lecture.findByIdAndDelete(lectureId);
+
+      if(!lecture){
+        return res.status(404).json({
+          message: "lecture not found"
+        })
+      }
+      
+      if(lecture.publicId){
+        await deleteMediaFromCloudinary(lecture.publicId)
+      }
+      
+      // Remove the lecture reference from the associated course
+      await Course.updateOne(
+          {lectures:lectureId}, // find the course that contains the lecture
+          {$pull:{lectures:lectureId}} // Remove the lectures id from the lectures array
+      );
+
+        return res.status(200).json({
+            message:"Lecture removed successfully."
+        })
+      
+    } catch (error) {
+     console.log(error);
+        return res.status(500).json({
+            message:"Failed to remove lecture"
+        })
+    }
+}
+
+
+
+export const getLectureById = async (req, res) => {
+
+  try {
+     const { lectureId } = req.params;
+      const lecture = await Lecture.findById(lectureId);
+
+      if(!lecture){
+        return res.status(404).json({
+          message: "lecture not found"
+        })
+      }
+
+      return res.status(200).json({
+        lecture
+      })
+  } catch (error) {
+     console.log(error);
+        return res.status(500).json({
+            message:"Failed to find lecture"
+        })
+  }
+}
+
+
+// publish or unpublish course 
+
+export const togglePublishCourse = async (req, res) => {
+    try {
+
+      const {courseId} = req.params
+      const {publish} = req.query;  // true | false
+
+      console.log(courseId, publish)
+
+      const course = await Course.findById(courseId);
+
+      if(!course){
+        return res.status(404).json({
+          message: "Course not found"
+        })
+      }
+
+      course.isPublished = publish === "true"; // read the publish query above which is extracted from the req
+      await course.save();
+
+      const statusMessage = course.isPublished ? "Published" : "Unpublished"
+      
+        return res.status(200).json({
+            message:`Course is ${statusMessage}`
+        });
+
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({
+        message: "Failed to update status"
+      })
+    }
+}
+
