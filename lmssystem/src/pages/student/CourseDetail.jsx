@@ -1,4 +1,3 @@
-
 import BuyCourseButton from "@/components/BuyCourseButton";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-
+import { useGetCourseDetailWithStatusQuery } from "@/features/api/purchaseApi";
 import { BadgeInfo, Lock, PlayCircle } from "lucide-react";
 import React from "react";
 import ReactPlayer from "react-player";
@@ -20,39 +19,42 @@ const CourseDetail = () => {
   const params = useParams();
   const courseId = params.courseId;
   const navigate = useNavigate();
- 
-  const isLoading= false
-  const isError = false
-  const purchased = false
-
+  const { data, isLoading, isError } =
+    useGetCourseDetailWithStatusQuery(courseId);
 
   if (isLoading) return <h1>Loading...</h1>;
   if (isError) return <h>Failed to load course details</h>;
 
+  const { course, purchased } = data;
 
-
-
-
+  const previewLecture = course?.lectures?.find(
+    (lecture) => lecture.isPreviewFree
+  );
+  const handleContinueCourse = () => {
+    if(purchased){
+      navigate(`/course-progress/${courseId}`)
+    }
+  }
 
   return (
     <div className="space-y-5">
       <div className="bg-[#2D2F31] text-white">
         <div className="max-w-7xl mx-auto py-8 px-4 md:px-8 flex flex-col gap-2">
           <h1 className="font-bold text-2xl md:text-3xl">
-          courseTitle
+            {course?.courseTitle}
           </h1>
           <p className="text-base md:text-lg">Course Sub-title</p>
           <p>
             Created By{" "}
             <span className="text-[#C0C4FC] underline italic">
-              Ayush sharma
+              {course?.creator.name}
             </span>
           </p>
           <div className="flex items-center gap-2 text-sm">
             <BadgeInfo size={16} />
-            <p>Last updated 2 hours ago</p>
+            <p>Last updated {course?.createdAt.split("T")[0]}</p>
           </div>
-          <p>Students enrolled: 5</p>
+          <p>Students enrolled: {course?.enrolledStudents.length}</p>
         </div>
       </div>
       <div className="max-w-7xl mx-auto my-5 px-4 md:px-8 flex flex-col lg:flex-row justify-between gap-10">
@@ -60,7 +62,7 @@ const CourseDetail = () => {
           <h1 className="font-bold text-xl md:text-2xl">Description</h1>
           <p
             className="text-sm"
-            // dangerouslySetInnerHTML={{ __html: course.description }}
+            dangerouslySetInnerHTML={{ __html: course.description }}
           />
           <Card>
             <CardHeader>
@@ -68,39 +70,61 @@ const CourseDetail = () => {
               <CardDescription>4 lectures</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              {/* {course.lectures.map((lecture, idx) => (
+              {course.lectures.map((lecture, idx) => (
                 <div key={idx} className="flex items-center gap-3 text-sm">
                   <span>
-                    {true ? <PlayCircle size={14} /> : <Lock size={14} />}
+                    {purchased ? <PlayCircle size={14} /> : <Lock size={14} />}
                   </span>
                   <p>{lecture.lectureTitle}</p>
                 </div>
-              ))} */}
+              ))}
             </CardContent>
           </Card>
         </div>
         <div className="w-full lg:w-1/3">
           <Card>
             <CardContent className="p-4 flex flex-col">
-              <div className="w-full aspect-video mb-4">
-                <ReactPlayer
-                  width="100%"
-                  height={"100%"}
-                  url=""
-                  controls={true}
-                />
-              </div>
-              <h1>Lecture title</h1>
+                {/* <div className="w-full aspect-video mb-4 bg-slate-200">
+                {previewLecture?.videoUrl ? (
+                  <ReactPlayer
+                    width="100%"
+                    height="100%"
+                    url={previewLecture.videoUrl}
+                    controls={true}
+                  />
+                ) : (
+                  <img
+                    src={course.courseThumbnail}
+                    alt={course.courseTitle}
+                    className="w-full h-full object-cover"
+                  />
+                )}
+              </div> */}
+              <div className="w-full aspect-video mb-4 bg-slate-200">
+  <ReactPlayer
+    width="100%"
+    height="100%"
+    url="https://youtu.be/JMvWrx_rLw4
+"
+    controls
+    onReady={() => console.log("ReactPlayer Ready ✅")}
+    onError={(e) => console.log("ReactPlayer Error ❌", e)}
+  />
+</div>
+              <h1 className="font-semibold">
+                {previewLecture
+                  ? previewLecture.lectureTitle
+                  : "Course Preview"}
+              </h1>
               <Separator className="my-2" />
               <h1 className="text-lg md:text-xl font-semibold">Course Price</h1>
             </CardContent>
             <CardFooter className="flex justify-center p-4">
               {purchased ? (
-                <Button  className="w-full">Continue Course</Button>
+                <Button onClick={handleContinueCourse} className="w-full">Continue Course</Button>
               ) : (
                 <BuyCourseButton courseId={courseId} />
               )}
-
             </CardFooter>
           </Card>
         </div>

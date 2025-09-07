@@ -15,7 +15,7 @@ const CustomLoader = ({ children }) => {
 };
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
+  // <StrictMode>
     <Provider store={store}>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <CustomLoader>
@@ -24,5 +24,5 @@ createRoot(document.getElementById("root")).render(
         </CustomLoader>
       </ThemeProvider>
     </Provider>
-  </StrictMode>
+  // </StrictMode>
 );

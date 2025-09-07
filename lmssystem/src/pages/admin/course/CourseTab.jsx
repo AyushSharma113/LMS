@@ -24,6 +24,7 @@ import {
   useEditCourseMutation,
   useGetCourseByIdQuery,
   usePublishCourseMutation,
+  useRemoveCourseMutation,
 } from "../../../features/api/courseApi";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -47,6 +48,7 @@ const CourseTab = () => {
 
   const [editCourse, { data, isLoading, isSuccess, error }] =
     useEditCourseMutation();
+    const [removeCourse, {data: removeCourseData, isSuccess: removeSuccess, isLoading: removeLoading, error: removeError}] =  useRemoveCourseMutation()
   const {
     data: courseByIdData,
     isLoading: courseByIdLoading,
@@ -121,6 +123,11 @@ const CourseTab = () => {
     }
   }
 
+
+  const removeCourseHandler = ()=>{
+    removeCourse(courseId)
+    navigate("/admin/course")
+  }
   
   useEffect(() => {
     if (isSuccess) {
@@ -155,7 +162,7 @@ const CourseTab = () => {
             {courseByIdData?.course.isPublished ? "Unpublished" : "Publish"}
             
           </Button>
-          <Button>Remove Course</Button>
+          <Button onClick={removeCourseHandler}>Remove Course</Button>
         </div>
       </CardHeader>
       <CardContent>

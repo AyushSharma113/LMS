@@ -28,6 +28,7 @@ app.use("/api/v1/course", courseRoute);
 app.use("/api/v1/purchase", purchaseRoute);
 
 // USER_API = http://localhost:8000/api/v1/user;
+// USER_API = http://localhost:8000/api/v1/purchase/webhook;
 
 // server starting
 const PORT = process.env.PORT || 3000;
