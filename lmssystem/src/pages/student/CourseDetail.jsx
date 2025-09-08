@@ -101,16 +101,16 @@ const CourseDetail = () => {
                 )}
               </div> */}
               <div className="w-full aspect-video mb-4 bg-slate-200">
-  <ReactPlayer
-    width="100%"
-    height="100%"
-    url="https://youtu.be/JMvWrx_rLw4
-"
-    controls
-    onReady={() => console.log("ReactPlayer Ready ✅")}
-    onError={(e) => console.log("ReactPlayer Error ❌", e)}
-  />
-</div>
+                  <ReactPlayer
+                    width="100%"
+                    height="100%"
+                    url="https://youtu.be/JMvWrx_rLw4
+                "
+                    controls
+                    onReady={() => console.log("ReactPlayer Ready ✅")}
+                    onError={(e) => console.log("ReactPlayer Error ❌", e)}
+                  />
+                </div>
               <h1 className="font-semibold">
                 {previewLecture
                   ? previewLecture.lectureTitle

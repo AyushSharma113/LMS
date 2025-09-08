@@ -7,6 +7,8 @@ import cookieParser from "cookie-parser";
 import courseRoute from "./routes/course.route.js";
 import mediaRoute from "./routes/media.route.js"
 import purchaseRoute from "./routes/purchaseCourse.route.js"
+import courseProgressRoute from './routes/CourseProgress.route.js'
+
 dotenv.config({});
 
 connectDB();
@@ -26,6 +28,7 @@ app.use("/api/v1/media", mediaRoute);
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/course", courseRoute);
 app.use("/api/v1/purchase", purchaseRoute);
+app.use("/api/v1/progress", courseProgressRoute);
 
 // USER_API = http://localhost:8000/api/v1/user;
 // USER_API = http://localhost:8000/api/v1/purchase/webhook;
