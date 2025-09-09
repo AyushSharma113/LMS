@@ -32,7 +32,7 @@ export const getCourseProgress = async (req, res) => {
       });
     }
 
-    // Step-3 Return the user's course progress alog with course details
+    // Step-3 Return the user's course progress along with course details
     return res.status(200).json({
       data: {
         courseDetails,
