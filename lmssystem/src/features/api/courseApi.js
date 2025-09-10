@@ -20,13 +20,36 @@ export const courseApi = createApi({
       invalidatesTags: ["Refetch_Creator_Course"],
     }),
 
-     getPublishedCourse: builder.query({
+    getSearchCourse: builder.query({
+      query: ({ searchQuery, categories, sortByPrice }) => {
+        // build query string
+        let queryString = `/search?query=${encodeURIComponent(searchQuery)}`;
+
+        // append categories
+        if (categories && categories.length > 0) {
+          const categoriesString = categories.map(encodeURIComponent).join(",");
+          queryString += `&categories=${categoriesString}`;
+        }
+
+        // append sortbyprice is available
+        if (sortByPrice) {
+          queryString += `&sortByPrice=${encodeURIComponent(sortByPrice)}`;
+        }
+
+        return {
+          url: queryString,
+          method: "GET",
+        };
+      },
+    }),
+
+    getPublishedCourse: builder.query({
       query: () => ({
         url: "/published-courses",
         method: "GET",
       }),
     }),
-    
+
     getCreatorCourse: builder.query({
       query: () => ({
         url: "",
@@ -97,26 +120,26 @@ export const courseApi = createApi({
       }),
       invalidatesTags: ["Refetch_Creator_Course"],
     }),
-    
+
     getLectureById: builder.query({
       query: (lectureid) => ({
         url: `lecture/${lectureid}`,
-        method: 'GET'
-      })
+        method: "GET",
+      }),
     }),
-    
-    publishCourse: builder.mutation({
-      query: ({courseId, query}) => ({
-        url: `/${courseId}?publish=${query}`,
-        method: 'PATCH'
-      })
-    })
 
+    publishCourse: builder.mutation({
+      query: ({ courseId, query }) => ({
+        url: `/${courseId}?publish=${query}`,
+        method: "PATCH",
+      }),
+    }),
   }),
 });
 
 export const {
   useCreateCourseMutation,
+  useGetSearchCourseQuery,
   useGetPublishedCourseQuery,
   useGetCreatorCourseQuery,
   useEditCourseMutation,
@@ -127,5 +150,5 @@ export const {
   useRemoveLectureMutation,
   useGetLectureByIdQuery,
   usePublishCourseMutation,
-  useRemoveCourseMutation
+  useRemoveCourseMutation,
 } = courseApi;

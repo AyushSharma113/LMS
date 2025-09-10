@@ -48,10 +48,10 @@ export const removeCourse = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-     return res.status(400).json({
-        success: false,
-        message: "course not found.",
-      });
+    return res.status(400).json({
+      success: false,
+      message: "course not found.",
+    });
   }
 };
 
@@ -172,47 +172,64 @@ export const getCourseById = async (req, res) => {
   }
 };
 
-export const searchCourse = async (req,res) => {
-    try {
-        const {query = "", categories = [], sortByPrice =""} = req.query;
-        console.log(categories);
-        
-        // create search query
-        const searchCriteria = {
-            isPublished:true,
-            $or:[
-                {courseTitle: {$regex:query, $options:"i"}},
-                {subTitle: {$regex:query, $options:"i"}},
-                {category: {$regex:query, $options:"i"}},
-            ]
-        }
+export const searchCourse = async (req, res) => {
+  try {
+    const { query = "", categories = [], sortByPrice = "" } = req.query;
 
-        // if categories selected
-        if(categories.length > 0) {
-            searchCriteria.category = {$in: categories};
-        }
+    // Parse categories from query param
+    const categoriesArray =
+      typeof categories === "string" ? categories.split(",") : categories;
 
-        // define sorting order
-        const sortOptions = {};
-        if(sortByPrice === "low"){
-            sortOptions.coursePrice = 1;//sort by price in ascending
-        }else if(sortByPrice === "high"){
-            sortOptions.coursePrice = -1; // descending
-        }
+    // Base criteria
+    const searchCriteria = {
+      isPublished: true,
+    };
 
-        let courses = await Course.find(searchCriteria).populate({path:"creator", select:"name photoUrl"}).sort(sortOptions);
-
-        return res.status(200).json({
-            success:true,
-            courses: courses || []
-        });
-
-    } catch (error) {
-        console.log(error);
-        
+    // Add keyword search if query provided
+    if (query) {
+      searchCriteria.$or = [
+        { courseTitle: { $regex: query, $options: "i" } },
+        { subTitle: { $regex: query, $options: "i" } },
+        { category: { $regex: query, $options: "i" } },
+      ];
     }
-}
 
+    // If categories selected, match ANY of them (case-insensitive)
+    if (categoriesArray.length > 0) {
+      searchCriteria.category = {
+        $in: categoriesArray.map((cat) => new RegExp(cat, "i")),
+      };
+    }
+
+    // Sort by price if needed
+    const sortOptions = {};
+    if (sortByPrice === "low") {
+      sortOptions.coursePrice = 1;
+    } else if (sortByPrice === "high") {
+      sortOptions.coursePrice = -1;
+    }
+
+    // Log for debugging
+    console.log("Final Query:", JSON.stringify(searchCriteria, null, 2));
+
+    // Fetch from DB
+    const courses = await Course.find(searchCriteria)
+      .populate({ path: "creator", select: "name photoUrl" })
+      .sort(sortOptions);
+
+    // Send response
+    return res.status(200).json({
+      success: true,
+      courses: courses || [],
+    });
+  } catch (error) {
+    console.error("Search error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while searching.",
+    });
+  }
+};
 
 export const createLecture = async (req, res) => {
   try {

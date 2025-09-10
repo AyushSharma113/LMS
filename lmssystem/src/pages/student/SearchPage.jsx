@@ -19,10 +19,13 @@ const SearchPage = () => {
     sortByPrice
   });
 
+  console.log(data)
+  
   const isEmpty = !isLoading && data?.courses.length === 0;
 
-  const handleFilterChange = (categories, price) => {
-  console.log("handle filter change")
+   const handleFilterChange = (categories, price) => {
+    setSelectedCatgories(categories);
+    setSortByPrice(price);
   }
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-8">
