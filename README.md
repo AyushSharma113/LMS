@@ -145,9 +145,9 @@ This project is licensed under the MIT License.
 
 Feel free to reach out:
 
-* GitHub: [@your-username](https://github.com/your-username)
-* Email: [your-email@example.com](mailto:your-email@example.com)
+* GitHub: [AyushSharma113](https://github.com/AyushSharma113)
+* Email: [sharmaayushkumar15@gmail.com](mailto:sharmaayushkumar15@gmail.com)
 
 ---
 
-Let me know if you'd like this tailored with your actual repo URL, author name, or a deployment section (like for Vercel / Heroku / Netlify).
+
