@@ -71,7 +71,7 @@ export const getPublishedCourse = async (req, res) => {
       courses,
     });
   } catch (error) {
-    console.log(error);
+    console.log("internal server error: ",error);
   }
 };
 
