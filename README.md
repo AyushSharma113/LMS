@@ -41,8 +41,8 @@ A full-featured Learning Management System (LMS) built with the **MERN stack**. 
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/your-username/mern-lms.git
-cd mern-lms
+git clone https://github.com/your-username/LMS.git
+cd LMS
 ```
 
 2. **Install server dependencies**
